@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    /* 基础路径和模块别名 */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* JS/TS 语法等级 */
+    "target": "ESNext",             // 最新 JS 语法
+    "module": "ESNext",             // ESM 模块
+    "lib": ["ESNext", "DOM", "DOM.Iterable"], // 最新 JS + 浏览器 DOM 类型
+
+    /* JSX/React */
+    "jsx": "react-jsx",
+    "useDefineForClassFields": true,
+
+    /* 类型检查 */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Bundler mode for Vite/ESBuild */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+
+    /* Node vs 浏览器差异 */
+    "types": ["vite/client", "node"],
+
+    /* 不生成 JS，交给 Vite/ESBuild 打包 */
+    "noEmit": true,
+    "isolatedModules": true,
+    "composite": true
+  },
+  "include": [
+    "src",
+    "vite.config.ts"
+  ]
+}
