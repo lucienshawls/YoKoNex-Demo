@@ -1,13 +1,41 @@
 import { login } from '@/yokonex'
+import { StatusIndicator } from './StatusIndicator'
+import { useState } from 'react'
+import type { Status, StatusIndicatorProps } from './StatusIndicator'
+import { ChatSDK } from '@tencentcloud/chat'
 
 interface LoginProps {
+    chatRef: React.RefObject<ChatSDK | null>,
     userID: string,
     gameToken: string,
     setUserID: (id: string) => void,
     setGameToken: (token: string) => void,
 }
 
-export default function Login({ userID, gameToken, setUserID, setGameToken }: LoginProps) {
+export default function Login({ chatRef, userID, gameToken, setUserID, setGameToken }: LoginProps) {
+  const [loginState, setLoginState] = useState<StatusIndicatorProps>({
+    status: 'idle',
+    label: '未登录',
+    message: '请点击登录按钮进行登录',
+  })
+  const handleLogin = async () => {
+    setLoginState({
+      status: 'loading',
+      label: '登录中...',
+      message: '正在使用提供的 UserID 和 Game Token 登录，请稍候',
+    })
+    const loginRes = await login(userID, gameToken)
+    const status: Status = loginRes.success ? 'success' : 'error'
+    const label = loginRes.success ? '登录成功' : '登录失败'
+    setLoginState({
+      status,
+      label,
+      message: loginRes.message,
+    })
+    if (loginRes.success && loginRes.chat) {
+      chatRef.current = loginRes.chat
+    }
+  }
   return (
     <div className="w-full max-w-md bg-white rounded-xl shadow-md p-6 space-y-4">
       <h2 className="text-xl font-semibold">登录</h2>
@@ -37,11 +65,13 @@ export default function Login({ userID, gameToken, setUserID, setGameToken }: Lo
         </div>
 
         <button
-          onClick={() => login(userID, gameToken)}
+          onClick={handleLogin}
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors"
         >
           登录
         </button>
+
+        <StatusIndicator {...loginState} />
 
         {/* {loginStatus && <p className="text-center text-gray-700 mt-1">{loginStatus}</p>} */}
       </div>
